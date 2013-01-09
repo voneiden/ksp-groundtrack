@@ -1,0 +1,87 @@
+<html>
+<head>
+    <!--
+    This file is part of KSP Groundtracker.
+
+    KSP Groundtracker is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    KSP Groundtracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with KSP Groundtracker.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+    <script type="text/javascript" src="jquery.js"></script>  
+    <script>
+    function beforeSubmit()
+    {
+        var fname = document.getElementById("ifile").value;
+        // check if fname has the desired extension
+        if (/.*\.zip/.test(fname) || /.*\.rar/.test(fname)) {
+            document.getElementById("uploadButton").disabled = true;
+            return true;
+        } else {
+            alert("Please compress your file as zip or rar to save bandwidth, thank you.");
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<h3>Kerbal Space Program Ground Track Plotter</h3>
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it under certain conditions.
+
+<hr>
+
+<form method="post" action="render.py" onsubmit="return beforeSubmit();" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>
+                Input type
+            </td>
+            <td>
+                <select name="filetype">
+                  <option value="track">Track.log</option>
+                  <option value="persistence" disabled=disabled>Persistence.sqs</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Input file (MUST be zipped!)
+            </td>
+            <td>
+                <input type="file" id="ifile" name="ifile"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Predict orbit history (only for track files, see below for information)
+            </td>
+            <td>
+                <select name="predict">
+                  <option value="predict">Yes</option>
+                  <option value="nopredict">No</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input id="uploadButton" name="uploadButton" type="submit" value="Upload">
+            </td>
+        </tr>
+    </table>
+</form>
+<hr>
+Predict orbit history<br> 
+<b>Yes</b> - If the data in track.log doesn't cover the time range requested, guess the position of the vessel based on last known position. Note: may cause unwanted behaviour when undocking vessels.<br>
+<b>No</b> - Do not attempt to draw missing data.
+</body>
+</html>
