@@ -38,8 +38,10 @@ class Ship:
     def add_data(self,UT,T,DATA):
         UT = float(UT)
         if T == "LND" or T == "FLY":
-            latitude = float(DATA[0])
-            longitude = float(DATA[1]) + 90
+            longitude = float(DATA[0]) + 90 # <- Sort this out
+            latitude = float(DATA[1])
+            if longitude > 180:
+                longitude -= 360
             self.datapoints[UT] = [longitude,latitude]
         elif T == "KEP":
             epoch = float(DATA[0]) / 60.0 / 60.0 / 24.0
@@ -73,10 +75,8 @@ class Ship:
         print "New datapoints",len(self.datapoints)
 
 
-class Plotter:
-    def __init__(self):
-        pass
-    def plot_track(self,fname):
+class Track:
+    def read_track(self,fname):
                 
         shippids = {}
         biggestUT = 0
@@ -120,7 +120,10 @@ class Plotter:
         for ship in shippids.values():
             if ship.name == "KSS 1e" or ship.name == "KomSat 4" or ship.name == "KSS 1 Probe":
                 del shippids[ship.pid]
-            
+
+        return [UT,shippids]
+
+    def plot_track(self,UT,shippids,predict=True):
         fig = plt.figure(figsize=(20,10))
         kmap = mpl_toolkits.basemap.Basemap(rsphere=600000,celestial=True,resolution=None)
         im = plt.imread("Kerbin_elevation.png")
@@ -130,7 +133,7 @@ class Plotter:
 
         #UT = float(ss["UT"]) / 60 / 60 / 24
         #ships = ss["VESSELS"]
-        colors = ["red","green","white","cyan","orange","yellow","purple","brown"]
+        #colors = ["red","green","white","cyan","orange","yellow","purple","brown"]
         nearest=lambda a,l:min(l,key=lambda x:abs(x-a)) # Thanks stackexchange
         steps = 30 #Minutes
         trackTime = steps/60/24 #  30 minutes
@@ -142,7 +145,7 @@ class Plotter:
             XY = []
             for i in xrange(steps):
                 stepEpoch = UT - i*stepTime
-                if stepEpoch<ship.min: #TODO: predictorbits
+                if stepEpoch<ship.min and not predict: #TODO: predictorbits
                     stepEpoch = ship.min #This is to ensure that no orbits are drawn which have unsure stuff
                 nt = nearest(stepEpoch,ship.datapoints.keys())
                 print "Epoch ",stepEpoch,"using datapoint",nt
