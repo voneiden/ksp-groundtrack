@@ -19,7 +19,7 @@
 '''
 
 import SimpleHTTPServer,SocketServer,cgi,zipfile,sys,time,re
-import rarfile,track,persistant
+import rarfile,track,persistent
 
 PORT = 8000
 
@@ -116,7 +116,7 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             
         else:
             print "Handle persistant"
-            p = sync.Persistent(datafile)
+            p = persistent.Persistent(datafile)
             t = track.Track()
             plt = t.plot_track(p.create_snapshot(),True)
             fname = "./tmp/plot_%f.svg"%(time.time())

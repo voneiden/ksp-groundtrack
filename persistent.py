@@ -81,15 +81,15 @@ class Persistent:
         if len(nodestack) != 0:
             print "Problems, nodestack is not zero:",len(nodestack)
     def create_snapshot(self):
-        for kid in p.root.kids:
+        for kid in self.root.kids:
             if kid.name == "FLIGHTSTATE":
-                UT = kid.UT
+                UT = float(kid.UT) / 60.0 / 60.0 / 24.0
                 break
         snapshot = {}
         
         print "Universal time:",UT
         shippids = {}
-        for vessel in p.vessels:
+        for vessel in self.vessels:
             if "Debris" in vessel.name:
                 continue
 

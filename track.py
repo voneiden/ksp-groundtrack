@@ -58,7 +58,7 @@ class Ship:
         keys = self.datapoints.keys()
         keys.sort()
         self.min = keys[0]
-        self.max = keys[1]
+        #self.max = keys[1]
         print "Datapoints",len(self.datapoints)
         for i,key in enumerate(keys):
             if i == 0: 
@@ -123,7 +123,10 @@ class Track:
 
         return [UT,shippids]
 
-    def plot_track(self,UT,shippids,predict=True):
+    def plot_track(self,data,predict=True):
+        UT = data[0]
+        shippids = data[1]
+        
         fig = plt.figure(figsize=(20,10))
         kmap = mpl_toolkits.basemap.Basemap(rsphere=600000,celestial=True,resolution=None)
         im = plt.imread("Kerbin_elevation.png")
