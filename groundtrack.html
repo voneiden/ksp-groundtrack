@@ -20,15 +20,15 @@
     <script>
     function beforeSubmit()
     {
-        var fname = document.getElementById("ifile").value;
+        //var fname = document.getElementById("ifile").value;
         // check if fname has the desired extension
-        if (/.*\.zip/.test(fname) || /.*\.rar/.test(fname)) {
+        //if (/.*\.zip/.test(fname) || /.*\.rar/.test(fname)) {
             document.getElementById("uploadButton").disabled = true;
             return true;
-        } else {
-            alert("Please compress your file as zip or rar to save bandwidth, thank you.");
-            return false;
-        }
+        //} else {
+        //    alert("Please compress your file as zip or rar to save bandwidth, thank you.");
+        //    return false;
+        //}
     }
     </script>
 </head>
@@ -59,7 +59,7 @@ Plugin KSP-Groundtrack v0.1 <a href="http://dl.dropbox.com/u/17806420/KSP-Ground
         </tr>
         <tr>
             <td>
-                Input file (<b>MUST be zipped!</b>)
+                Input file (<b>persistent.sfs MUST be zipped!</b>)
             </td>
             <td>
                 <input type="file" id="ifile" name="ifile"/>
@@ -84,7 +84,10 @@ Plugin KSP-Groundtrack v0.1 <a href="http://dl.dropbox.com/u/17806420/KSP-Ground
         </tr>
         <tr>
         <td></td>
-        <td>Processing takes at least 15 seconds, please be patient.</td>
+        <td>Processing takes at least 15 seconds, please be patient.<br>
+        1MB persistent.sfs takes probably close to 45 seconds.<br>
+        Tracks are shown for the last 30 minutes. Future version <br>
+        will allow changing this time.</td>
         </tr>
     </table>
 </form>
@@ -99,7 +102,7 @@ Plugin KSP-Groundtrack v0.1 <a href="http://dl.dropbox.com/u/17806420/KSP-Ground
 <li>No item is needed (nor can you find it) to be attached to your ship. It's "always on" plugin.</li>
 <li>Output is generated at PluginData\groundtracker\track.log</li>
 <li>NOTE: track.log is written over every time you start KSP.</li>
-<li>To generate a ground track, zip track.log and upload here.</li>
+<li>To generate a ground track, zip (optional) track.log and upload here.</li>
 </ul>
 </body>
 </html>

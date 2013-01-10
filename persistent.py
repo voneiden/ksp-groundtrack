@@ -111,9 +111,13 @@ class Persistent:
                             
                         break
             elif vessel.sit == "LANDED":
-                shippids[vessel.pid] = track.Ship(vessel.pid,vessel.name)
-                shippids[vessel.pid].add_data(UT,"LND",[vessel.lon,vessel.lat])
-                shippids[vessel.pid].clean_data()
+                for kid in vessel.kids:
+                    if kid.name == "ORBIT":
+                        if kid.REF == "1":
+                            shippids[vessel.pid] = track.Ship(vessel.pid,vessel.name)
+                            shippids[vessel.pid].add_data(UT,"LND",[vessel.lon,vessel.lat])
+                            shippids[vessel.pid].clean_data()
+                        break    
         return [UT,shippids]
         
 if __name__ == '__main__':

@@ -18,7 +18,7 @@
     along with KSP Groundtracker.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import SimpleHTTPServer,SocketServer,cgi,zipfile,sys,time,re
+import SimpleHTTPServer,SocketServer,cgi,zipfile,sys,time,re, os
 import rarfile,track,persistent
 
 PORT = 8000
@@ -51,9 +51,10 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_response(404,"NOT FOUND")
         self.send_header("Content-type","text/plain")
         self.end_headers()
-        self.wfile.write("This is not the file you are looking for..")
+        self.wfile.write("This is not the file you are looking for.. IF you were uploading a persistent.sfs file, make sure it was zipped!")
 
     def do_POST(self):
+            
         form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
@@ -63,6 +64,9 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         v=form['ifile'].value
         fn=form['ifile'].filename
+        ft=form['filetype'].value
+        tmptime = time.time()
+        tmpfile = "./tmp/%f.tmp"%tmptime
         
         if fn[-3:].lower() == "zip":
             f=open('temp.zip','wb')
@@ -79,30 +83,20 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 sys.exit(1)
             z.extractall(path="./tmp")
             datafile = "./tmp/%s"%members[0]
+            os.rename(datafile,tmpfile)
 
-        elif fn[-3:].lower() == "rar":
-            f=open('temp.rar','wb')
+        elif ft == "track" and fn[-3:].lower() == "log":
+            f=open(tmpfile,'wb')
             f.write(v)
             f.close()
-            z = rarfile.RarFile("temp.rar","r")
-            members = z.namelist()
-            print "MEMBERS rar:",members
-            if len(members) != 1:
-                self.wfile.write("Failed to process rar file.")
-                sys.exit(1)
-            if "/" in members[0]:
-                self.wfile.write("Failed to process rar file.")
-                sys.exit(1)
-            z.extractall(path="./tmp")
-            datafile = "./tmp/%s"%members[0]
-
+            
         else:
             print fn
             print fn[-3:]
             print "???"
             self.send404()
             return
-        print "Handle file:",datafile
+        print "Handle file:",tmpfile
         if form["predict"].value == "predict":
             predict = True
         else:
@@ -110,19 +104,19 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if form["filetype"].value == "track":
             print "Handle track"
             t = track.Track()
-            plt = t.plot_track(t.read_track(datafile),predict)
+            plt = t.plot_track(t.read_track(tmpfile),predict)
             fname = "./tmp/plot_%f.svg"%(time.time())
             plt.savefig(fname,dpi=100)
             
         else:
             print "Handle persistant"
-            p = persistent.Persistent(datafile)
+            p = persistent.Persistent(tmpfile)
             t = track.Track()
             plt = t.plot_track(p.create_snapshot(),True)
             fname = "./tmp/plot_%f.svg"%(time.time())
             plt.savefig(fname,dpi=100)
 
-          
+        os.remove(tmpfile)
         self.send_response(303,"See Other")
         self.send_header("Location",fname[2:])
         self.end_headers()
