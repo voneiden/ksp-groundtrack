@@ -38,7 +38,10 @@ This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it under certain conditions. <br>
 The files you upload are not saved on the server. Ground tracks produced by the server are saved temporarily. Please do not hotlink to them,
 but instead rather upload them to image hosting sites such as imgur.com. Thanks.
-
+<p>
+This server is running on Raspberry Pi rev1. That's 180MB of memory available. No, I cannot reboot to enable 256MB. Yes, I need to use swap to draw your fancy pictures. Please do not abuse.
+<p>
+Plugin KSP-Groundtrack v0.1 <a href="http://dl.dropbox.com/u/17806420/KSP-Groundtrack-0.1.zip">Download</a> [<a href="http://www.github.com/voneiden/ksp-groundtrack">Source code</a>]
 <hr>
 
 <form method="post" action="render.py" onsubmit="return beforeSubmit();" enctype="multipart/form-data">
@@ -50,13 +53,13 @@ but instead rather upload them to image hosting sites such as imgur.com. Thanks.
             <td>
                 <select name="filetype">
                   <option value="track">Track.log</option>
-                  <option value="persistence">Persistence.sqs</option>
+                  <option value="persistence">Persistent.sqs</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td>
-                Input file (MUST be zipped!)
+                Input file (<b>MUST be zipped!</b>)
             </td>
             <td>
                 <input type="file" id="ifile" name="ifile"/>
@@ -79,11 +82,24 @@ but instead rather upload them to image hosting sites such as imgur.com. Thanks.
                 <input id="uploadButton" name="uploadButton" type="submit" value="Upload">
             </td>
         </tr>
+        <tr>
+        <td></td>
+        <td>Processing takes at least 15 seconds, please be patient.</td>
+        </tr>
     </table>
 </form>
 <hr>
-Predict orbit history<br> 
+<b>Predict orbit history</b><br> 
 <b>Yes</b> - If the data in track.log doesn't cover the time range requested, guess the position of the vessel based on last known position. Note: may cause unwanted behaviour when undocking vessels.<br>
 <b>No</b> - Do not attempt to draw missing data.
+<h3>Plugin instructions</h3>
+<ul>
+<li>Install as any plugin, unzip in your KSP directory</li>
+<li>While you're at it, back up your KSP save. Why? Because it's a very good habit!
+<li>No item is needed (nor can you find it) to be attached to your ship. It's "always on" plugin.</li>
+<li>Output is generated at PluginData\groundtracker\track.log</li>
+<li>NOTE: track.log is written over every time you start KSP.</li>
+<li>To generate a ground track, zip track.log and upload here.</li>
+</ul>
 </body>
 </html>

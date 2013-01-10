@@ -143,6 +143,8 @@ class Track:
         stepTime = 1.0/60.0/24.0 # 1 minute
         reserved = []
         for ship in shippids.values():
+            last_rascension = None
+            last_declination = None
             if "debris" in ship.name.lower():
                 continue
             XY = []
@@ -172,6 +174,27 @@ class Track:
                         rascension = - np.degrees(np.arccos(ur[0]/ np.cos(declination)))
                        # print "360-",np.degrees(np.arccos(ur[0]/ np.cos(declination)))
                     declination = np.degrees(declination)
+
+                    # Insert NaN if crossing 180 or -180
+                    if last_rascension != None:
+                        dif = rascension - last_rascension
+                        if dif > 180 or dif < -180:
+                            if dif < -180: # Going from 180 to -180
+                                k = (declination - last_declination) / ((rascension - 180) + (180-last_rascension))
+                                d = (180 - last_rascension)*k + last_declination
+                                XY.append([180,d])
+                                XY.append([np.NaN,np.NaN])
+                                XY.append([-180,d])
+                            else: # Going from -180 to 180
+                                k = (declination - last_declination) / ((180-rascension) + (last_rascension-180))
+                                d = (last_rascension-180)*k + last_declination
+                                XY.append([-180,d])
+                                XY.append([np.NaN,np.NaN])
+                                XY.append([180,d])
+                                
+                            XY.append([np.NaN,np.NaN]) #FLIP
+                    last_rascension = rascension
+                    last_declination = declination
                     XY.append([rascension,declination])
                     
                 else:
