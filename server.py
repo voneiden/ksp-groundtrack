@@ -19,7 +19,7 @@
 '''
 
 import SimpleHTTPServer,SocketServer,cgi,zipfile,sys,time,re, os
-import rarfile,track,persistent
+import track,persistent
 
 PORT = 8000
 
