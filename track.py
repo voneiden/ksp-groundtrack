@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
-
+from math import radians
 '''
     This file is part of KSP Groundtracker.
 
@@ -98,6 +98,14 @@ class Track:
                 T = tok[1]
                 PID = tok[2]
                 DATA = tok[3:]
+                #DATA[0] = float(DATA[0]) #epoch
+                #DATA[1] = float(DATA[1]) #a
+                #DATA[2] = float(DATA[2]) #e
+                #DATA[3] = radians(float(DATA[3])) #i
+                #DATA[4] = radians(float(DATA[4])) #W
+                #DATA[5] = radians(float(DATA[5])) #w
+                #DATA[6] = float(DATA[6]) #M0
+
                 shippids[PID].add_data(UT,T,DATA)
                 if UT > biggestUT:
                     biggestUT = UT
@@ -123,7 +131,7 @@ class Track:
 
         return [UT,shippids]
 
-    def plot_track(self,data,predict=True):
+    def plot_track(self,data,predict=True,longplot=False):
         UT = data[0]
         shippids = data[1]
         
@@ -138,7 +146,10 @@ class Track:
         #ships = ss["VESSELS"]
         #colors = ["red","green","white","cyan","orange","yellow","purple","brown"]
         nearest=lambda a,l:min(l,key=lambda x:abs(x-a)) # Thanks stackexchange
-        steps = 30 #Minutes
+        if longplot:
+            steps = 720 #Minutes
+        else:
+            steps = 30 #Minutes
         trackTime = steps/60/24 #  30 minutes
         stepTime = 1.0/60.0/24.0 # 1 minute
         reserved = []

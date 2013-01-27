@@ -101,10 +101,14 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             predict = True
         else:
             predict = False
+        if form["longplot"].value == "yes":
+            longplot = True
+        else:
+            longplot = False
         if form["filetype"].value == "track":
             print "Handle track"
             t = track.Track()
-            plt = t.plot_track(t.read_track(tmpfile),predict)
+            plt = t.plot_track(t.read_track(tmpfile),predict,longplot)
             fname = "./tmp/plot_%f.svg"%(time.time())
             plt.savefig(fname,dpi=100)
             
